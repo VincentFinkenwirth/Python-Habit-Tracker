@@ -2,7 +2,6 @@ import habit
 import habit_analytics
 import interface
 
-
 def main():
     tracker = habit.HabitTracker()
     tracker.load_habits()
@@ -16,12 +15,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-
-
-
 #todo
 # 1) implement database lock?
 # 2) documentation & readability
-
-
