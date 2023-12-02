@@ -10,19 +10,32 @@ Simple habit tracker designed to keep track and analyze important habits.
 - seaborn
 - matplotlib
 
-To install type in terminal:
+## Installation
+Clone depository
 ```bash
-pip freeze > requirements.txt
+ git clone https://github.com/VincentFinkenwirth/Python-Habit-Tracker.git
 ```
-## Features
+Navigate to project directory:
+```bash
+cd Python-Habit-Tracker
+```
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-- Add and delete Habits with a task and a frequency.
-- Track, complete and gain streaks
-- View analytics
-- Basic tkinter GUI
-
-## Use
-Terminal:
+Run:
 ```bash
 python main.py
 ```
+
+## Features
+
+- Add and delete Habits with a task and a frequency.
+- Track, complete and gain streaks.
+- View analytics and reflect.
+- Basic tkinter GUI for easy handling.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
