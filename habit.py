@@ -30,15 +30,15 @@ class Habit:  # Habit(name, task, period, has_completed, deadline, streak, id)
             database.data_logger(self.id, 1, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), self.deadline.strftime('%Y-%m-%d %H:%M:%S'))
 
 
-
 class HabitTracker:  # main habit application
     def __init__(self, database="habit_database.db"):
         self.habits = []  # create list of active tracked habits
         self.todo = []
+        # Seperate database manager for threaded and main task
         self.database = data.DatabaseManager(database)
         self.update_database = data.DatabaseManager(database)
+        # Dataframe initialized
         self.dataframe = None
-
 
 
     def load_habits(self):  # load stored habit data from database, overwrites current.
@@ -75,7 +75,6 @@ class HabitTracker:  # main habit application
         # Update dataframe attribute
         self.dataframe = df
 
-
     def load_dynamic_habit_data(self):  # Load dynamic habit by computing on habit_entries dataframe
         # First load dataframe from database
         self.load_entries_dataframe()
@@ -83,7 +82,7 @@ class HabitTracker:  # main habit application
         for habit in self.habits:  # Loop through all habits
             habit_dataframe = habit_analytics.filter_by_habit(self.dataframe, habit.name)
             # Check if entries for habit exist
-            if len(habit_dataframe)>0:
+            if len(habit_dataframe) > 0:
                 # Get information from last entries
                 deadline = habit_dataframe["deadline"].iloc[-1]
                 deadline = datetime.strptime(deadline, '%Y-%m-%d %H:%M:%S')
@@ -104,7 +103,6 @@ class HabitTracker:  # main habit application
                 habit.deadline = deadline
                 habit.streak = streak
                 habit.has_completed = completed
-
 
     def habit_exists(self, new_habit_name):  # Method to check if a habit Name already exists
         for habit in self.habits:
@@ -158,19 +156,19 @@ class HabitTracker:  # main habit application
         df.loc[df['checked'] == 0, 'calculated_streak'] = 0
 
 
-        return analytics_data, df , lowest_achieval
-
+        return analytics_data, df, lowest_achieval
 
 # Functionality for main update loop
     def update_habits(self):  # Checks if deadline has passed and makes db entry if deadline is missed
         for habit in self.habits:
-            while datetime.now() >= habit.deadline:  # check if deadline passed and create missing data entries for period
-                if not habit.has_completed:
+            # check if deadline passed
+            while datetime.now() >= habit.deadline:
+                if not habit.has_completed:  # Check if habit hasnt been completed
                     self.database.data_logger(habit.id, 0,
                                               habit.deadline.strftime('%Y-%m-%d %H:%M:%S'),
                                               habit.deadline.strftime('%Y-%m-%d %H:%M:%S'))  # Create db entry for analytics
                     self.load_dynamic_habit_data()
-                else:
+                else:  # Update deadline if completed and deadline passed
                     self.load_dynamic_habit_data()
 
     def update_habits_loop(self):  # Create loop of update function

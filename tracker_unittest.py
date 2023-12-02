@@ -154,19 +154,13 @@ class TestHabitTracker(unittest.TestCase):
         # Check if deadline remains unchanged
         self.assertEqual(deadline.strftime('%Y-%m-%d %H:%M:%S'), Test1.deadline.strftime('%Y-%m-%d %H:%M:%S'))
 
-    def tearDown(self):
+    def tearDown(self):  # Delete test database
         self.tracker.database.close_connection()
         self.tracker.update_database.close_connection()
         if os.path.exists("UnitTest_Habit_database.db"):
             os.remove("UnitTest_Habit_database.db")
 
 
-def delete_test_database():
-    if os.path.exists("UnitTest_Habit_database.db"):
-            os.remove("UnitTest_Habit_database.db")
-
-
-
 if __name__ == '__main__':
     unittest.main()
-    delete_test_database()
+
