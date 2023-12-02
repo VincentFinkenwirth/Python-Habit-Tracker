@@ -256,13 +256,17 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
         # Load data based on selection
         analytics_data, graph_df, lowest_achieval = self.HabitTracker.get_analytics_data(selected_habit,selected_period,selected_time_period)
 
-        # Create entries for selected habits ((0)habit_name, (1)current_streak, (2)longest_streak, (3)completed, (4)total)
+        # Create entries for selected habits
+        # ((0)habit_name, (1)current_streak, (2)longest_streak, (3)completed, (4)total, (5)percentage)
         if len(analytics_data)>0:
             for entry in analytics_data:
+                # Turn achieval in str
                 acieval = f"{entry[3]}/{entry[4]}"
+                # create entry
                 tree.insert("", "end", text = entry[0], values=(entry[1],entry[2], acieval, entry[5]))
 
         tree.grid()
+
         # Display some nice to know facts
         if len(analytics_data)>2:  # Only display if multiple habits selected
             # Reminder of worst achieved habit

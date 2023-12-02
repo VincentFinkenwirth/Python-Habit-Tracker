@@ -22,4 +22,3 @@ if __name__ == "__main__":
 #todo
 # 1) implement database lock?
 # 2) documentation & readability
-# 3

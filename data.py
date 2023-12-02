@@ -1,7 +1,7 @@
 import sqlite3
 
 class DatabaseManager:  # Class that connects to a database(creates file if not exists)
-    def __init__(self, database = "habit_database.db"):
+    def __init__(self, database="habit_database.db"):
         self.conn = sqlite3.connect(database, check_same_thread=False)
         self.cursor = self.conn.cursor()
         self.create_Tables()
