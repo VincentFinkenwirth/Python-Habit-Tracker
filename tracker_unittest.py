@@ -155,10 +155,10 @@ class TestHabitTracker(unittest.TestCase):
         self.assertEqual(deadline.strftime('%Y-%m-%d %H:%M:%S'), Test1.deadline.strftime('%Y-%m-%d %H:%M:%S'))
 
     def tearDown(self):
-        for habit in self.tracker.habits:
-            self.tracker.delete_habit(habit.name)
-
         self.tracker.database.close_connection()
+        self.tracker.update_database.close_connection()
+        if os.path.exists("UnitTest_Habit_database.db"):
+            os.remove("UnitTest_Habit_database.db")
 
 
 def delete_test_database():

@@ -2,6 +2,8 @@
 
 Simple habit tracker designed to keep track and analyze important habits.
 
+
+## WIP
 ## Requirements
 [Python](https://www.python.org/) >= 3.9
 
