@@ -15,6 +15,10 @@ Clone depository
 ```bash
  git clone https://github.com/VincentFinkenwirth/Python-Habit-Tracker.git
 ```
+Create virtualenv:
+```bash
+python -m venv env
+```
 Navigate to project directory:
 ```bash
 cd Python-Habit-Tracker
