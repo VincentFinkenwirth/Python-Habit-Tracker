@@ -4,10 +4,10 @@ class DatabaseManager:  # Class that connects to a database(creates file if not 
     def __init__(self, database="habit_database.db"):
         self.conn = sqlite3.connect(database, check_same_thread=False) # create conneection
         self.cursor = self.conn.cursor()  # create cursor to execute statements
-        self.create_Tables()
+        self.create_tables()
 
 
-    def create_Tables(self):  # Function to create tables if none exist
+    def create_tables(self):  # Function to create tables if none exist
         # Static data table "habits"
         self.cursor.execute(
             "CREATE TABLE IF NOT EXISTS habits("

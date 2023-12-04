@@ -37,12 +37,12 @@ python main.py
 
 ## Features
 
-![Add/delete](images/add_delete.png)
+![Add/delete](images/add_delete.PNG)
 
 - Add new habits you want to track.
 - Delete habits from tracker.
 
-![Tracked](images/tracked_analytics.png)
+![Tracked](images/tracked_analytics.PNG)
 
 - Track, complete and gain streaks.
 - View analytics and reflect.
