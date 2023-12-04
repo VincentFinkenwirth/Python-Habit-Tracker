@@ -42,6 +42,11 @@ python main.py
 - View analytics and reflect.
 - Basic tkinter GUI for easy handling.
 
+## Test
+```bash
+python tracker_unittest.py
+```
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).

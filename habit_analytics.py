@@ -38,42 +38,51 @@ def return_achieval_rate(dataframe, habit_name=None):  # Function to return (com
         rate = 0
     return (completed, total, rate)
 
-def get_max_streak(dataframe, habit_name=None):
-    if habit_name:
+def get_max_streak(dataframe, habit_name=None):  # gets longest streac for a habit name(optional) out of dataframe
+    if habit_name:  # Filter dataframe if habit_name input
         dataframe = dataframe[dataframe["habit_name"] == habit_name]
-    dataframe = dataframe[dataframe["checked"] == 1]
-    if len(dataframe)>0:
+
+    dataframe = dataframe[dataframe["checked"] == 1]  # As streak gets calculated for misses aswell, select only completions
+    if len(dataframe)>0:  # Check if data exists
         return dataframe["calculated_streak"].max()
     return 0
 
-def return_max_streak_string(dataframe):  # Returns the longest streak and corresponding habit in a string
-    dataframe = dataframe[dataframe["checked"] == 1]
-    if len(dataframe)>0:
-        index = dataframe["calculated_streak"].idxmax()
-        habit_name = dataframe.loc[index, "habit_name"]
-        longest_streak = dataframe.loc[index, "calculated_streak"]
+def return_max_streak_string(dataframe):  # Returns the longest streak and corresponding habit out of entire dataframe as a short sentence(string)
+    # similar to get_max_streak, but used for whole dataframe not individual habit
+    # Can return habit corresponding to longest streak
+    dataframe = dataframe[dataframe["checked"] == 1]  # Filter for checked entries
+    if len(dataframe)>0:  # Check if data exists
+        index = dataframe["calculated_streak"].idxmax()  # Locate index of first max entry row
+        habit_name = dataframe.loc[index, "habit_name"]  # Get name based on index
+        longest_streak = dataframe.loc[index, "calculated_streak"]  # get streak based on index
+        # Return as sentence to be used under individual habit data
         return f"The overall longest streak is {longest_streak}, achieved in {habit_name}"
 
-def analytics_data(habits, habit_selection, dataframe):
+def analytics_data(habits, habit_selection, dataframe): # takes list of habit names, returns an array of longest streak, achieval rate for each selected habit
     analytics_data = []
-    lowest_achieval = (200, "")
+    lowest_achieval = (200, "") # tup that contains lowest rate and corresponding habit
 
-    for habit in habit_selection:  # Create entries for each selected habit
+    # Get data for each selected habit
+    for habit in habit_selection:
+        # get current streak from tracker
         current_streak = [hbit.streak for hbit in habits if hbit.name==habit]
+        # get longest streak from dataframe
         longest_streak = get_max_streak(dataframe, habit)
+        # get achieval data
         completed, total, rate = return_achieval_rate(dataframe, habit)
         #  Keep track of habit with lowest achieval rate
         if rate < lowest_achieval[0]:
             lowest_achieval = (rate, habit)
-        # Append data to list
+        # Add entry to list containing retrieved data for selected habit
         analytics_data.append((habit, current_streak, longest_streak, completed, total, f"{int(rate)}%"))
 
-        # Total data:
+    # Add "total" entry for table in GUI:
+    # Get overall data
     longest_streak = get_max_streak(dataframe)
     completed, total, rate = return_achieval_rate(dataframe)
     if rate == None:
-            rate = 0
+        rate = 0
     # Append total
     analytics_data.append(("Total","", longest_streak, completed, total, f"{int(rate)}%"))
-
+    # Return list and lowest achieval
     return analytics_data, lowest_achieval

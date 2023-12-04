@@ -1,6 +1,6 @@
 import habit
-import habit_analytics
 import interface
+
 
 def main():
     # Create tracker object
@@ -16,9 +16,6 @@ def main():
     tracker.database.close_connection()
     tracker.update_database.close_connection()
 
+
 if __name__ == "__main__":
     main()
-
-#todo
-# 1) implement database lock?
-# 2) documentation & readability

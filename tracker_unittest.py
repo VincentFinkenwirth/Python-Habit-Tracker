@@ -5,13 +5,11 @@ import sampleData
 import habit
 import os
 
-class TestHabitTracker(unittest.TestCase):
-    def setUp(self):
-        # Create tracker with its own Test database
+class TestHabitTracker(unittest.TestCase):  # Ran in terminal as "python tracker_unittest.py"
+    def setUp(self):  # Create tracker with its own Test database
         self.tracker = habit.HabitTracker("UnitTest_Habit_database.db")
 
-    def test_habit_exists(self):
-        # Add habit to tracker using append
+    def test_habit_exists(self):  # Add habit to tracker using append
         hbit = habit.Habit("Exercise", "Gym", 7)
         self.tracker.habits.append(hbit)
 
@@ -20,7 +18,6 @@ class TestHabitTracker(unittest.TestCase):
         self.assertFalse(self.tracker.habit_exists("Read"))
 
     def test_add_habit(self):  # Use habit_exists method for this test
-        self.tracker.habits = []
         # Test simple case of adding a habit
         self.tracker.add_habit("Read", "Books", 1)
         self.assertTrue(self.tracker.habit_exists("Read"))
@@ -31,28 +28,28 @@ class TestHabitTracker(unittest.TestCase):
         # Check if length of list is the same
         self.assertEqual(length, len(self.tracker.habits))
 
-    def test_load_habit(self):
+    def test_load_habit(self):  # Test static database data retrieval
         # Add habit
         self.tracker.add_habit("Read", "Books", 1)
         self.tracker.add_habit("Swim", "Sea", 1)
         # Check if habit delete gets also deleted from db
         self.tracker.delete_habit("Swim")
-        # Clear habit list
-        self.tracker.habits = []
         # Load habit from database
         self.tracker.load_habits()
         # Check if Habit is in list
         self.assertTrue(self.tracker.habit_exists("Read"))
         self.assertFalse(self.tracker.habit_exists("Swim"))
 
-    def test_get_habit_names(self):
+    def test_get_habit_names(self):  # Test function to display all tracked habit names
         self.tracker.add_habit("Read", "Books", 1)
         self.tracker.add_habit("Swim", "Sea", 1)
 
         name_list = self.tracker.get_habit_names()
         self.assertEqual(name_list, ["Read", "Swim"])
 
-    def test_delete_habit(self):
+    def test_delete_habit(self):  # Test if deletion occurs
+        self.tracker.add_habit("Read", "Books", 1)
+        self.tracker.add_habit("Swim", "Sea", 1)
         self.tracker.delete_habit("Read")
         self.tracker.delete_habit("Swim")
 
@@ -65,7 +62,7 @@ class TestHabitTracker(unittest.TestCase):
     # This test uses the sampleData module, that contains a number of habits with entries.
     # SampleData also contains a dict of manually calculated expected values for each habit.
 
-    def test_on_sample_data(self):
+    def test_on_sample_data(self):  # Test on sample data
         # Create sample habits
         if sampleData.create_test_habits(self.tracker):
             sampleData.create_habit_entries(self.tracker)
@@ -96,7 +93,6 @@ class TestHabitTracker(unittest.TestCase):
             self.assertEqual(calculated_total, total)
 
         # Test filter for periodicy (only weekly as method is the same for daily)
-
         self.tracker.load_habits()
         tracker_weekly = set(habit_analytics.tracked_habits_list(self.tracker, "All", 7))
         # Expected results
@@ -104,8 +100,7 @@ class TestHabitTracker(unittest.TestCase):
         # Test
         self.assertEqual(tracker_weekly, weekly)
 
-    # Test for correct deadline calculation, update and complete functionality
-    def test_dynamic_functionalities(self):
+    def test_dynamic_functionalities(self):  # Test for correct deadline calculation, update and complete functionality
         # Create test habit
         date_created = datetime.now() - timedelta(days=3)
         self.tracker.database.add_habit(("Test1", "Test", 1, date_created.strftime('%Y-%m-%d %H:%M:%S')))
@@ -163,4 +158,3 @@ class TestHabitTracker(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

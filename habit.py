@@ -4,6 +4,8 @@ import data
 import habit_analytics
 import threading
 import pandas as pd
+
+
 class Habit:  # Habit(name, task, period, has_completed, deadline, streak, id)
     def __init__(self, name, task, period,
                  created=datetime.now(), id=None):
@@ -20,7 +22,7 @@ class Habit:  # Habit(name, task, period, has_completed, deadline, streak, id)
         self.id = id
 
     def db_values(self):  # returns set of values for habit for database
-        return (self.name, self.task, self.period, self.created.strftime('%Y-%m-%d %H:%M:%S'))
+        return self.name, self.task, self.period, self.created.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_deadline(self):  # return habit deadline
         return self.deadline
@@ -39,7 +41,6 @@ class HabitTracker:  # main habit application
         self.update_database = data.DatabaseManager(database)
         # Dataframe initialized
         self.dataframe = None
-
 
     def load_habits(self):  # load stored habit data from database, overwrites current.
         self.habits = []  # Reset tracked habits list
@@ -69,7 +70,7 @@ class HabitTracker:  # main habit application
         # Every point of difference in the shifted dataframe marks point of new streak. Adding occ of prev changes gives streak id
         df["streak_id"] = df["combined_key"].ne(df["combined_key"].shift()).cumsum()
         # Sum up all entries with the same streak_id ,add one as cumcount starts at 0
-        df["calculated_streak"] = df.groupby("streak_id").cumcount()+ 1
+        df["calculated_streak"] = df.groupby("streak_id").cumcount() + 1
         # Remove computation columns to clean up dataframe
         df.drop(columns=["combined_key", "streak_id"], inplace=True)
         # Update dataframe attribute
@@ -88,7 +89,7 @@ class HabitTracker:  # main habit application
                 deadline = datetime.strptime(deadline, '%Y-%m-%d %H:%M:%S')
                 last_completed = habit_dataframe["checked"].iloc[-1]
                 # Logic to handle the different deadline scenarios
-                if last_completed == 1: # If last entry is completion
+                if last_completed == 1:  # If last entry is completion
                     streak = habit_dataframe["calculated_streak"].iloc[-1]
                     if datetime.now() >= deadline:  # Check if deadline of completed entry has passed
                         deadline += timedelta(days=habit.period)  # Increment deadline by period to get new deadline
@@ -123,8 +124,6 @@ class HabitTracker:  # main habit application
 
     def delete_habit(self, habit_name):  # function to remove active habit
         if self.habit_exists(habit_name):
-            habit = self.get_habit(habit_name)  # Not sure if this step is necessary
-            del habit
             self.database.remove_habit(habit_name)  # Delete database entries of habit
             self.load_habits()  # Refresh habit data
 
@@ -141,20 +140,19 @@ class HabitTracker:  # main habit application
         return temp
 
     # Function to get key statistics for habits with selection parameters (list of habit_names, period, time_period)
-    def get_analytics_data(self, habit_selection="All", period_selection = -1, time_period_selection=-1):
+    def get_analytics_data(self, habit_selection="All", period_selection=-1, time_period_selection=-1):
         # Create list of habits to analyze
         selected_habits = habit_analytics.tracked_habits_list(self, habit_selection, period_selection)
         # Load data from database and create dataframe
         self.load_entries_dataframe()
         # Filter by habit selection
-        df =  habit_analytics.filter_by_habit(self.dataframe, selected_habits)
+        df = habit_analytics.filter_by_habit(self.dataframe, selected_habits)
         # Filter by cutoff_date
         df = habit_analytics.filter_by_date(df, time_period_selection)
         # Create analytics dataframe for GUI
 
         analytics_data, lowest_achieval = habit_analytics.analytics_data(self.habits, selected_habits, df)
         df.loc[df['checked'] == 0, 'calculated_streak'] = 0
-
 
         return analytics_data, df, lowest_achieval
 

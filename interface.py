@@ -33,9 +33,7 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
             "height": 4,
             "bd": 3,
             "bg": "#45a049",  # Green color
-            "fg": "white",
-            "activebackground": "#45a049",  # Darker green color on hover
-            "activeforeground": "white"
+            "fg": "white"
         }
 
         self.label = tk.Label(self, text="Habit Tracker")
@@ -47,7 +45,7 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
         self.delete_habit_button = tk.Button(self, text="Delete Habit", command = self.show_delete_habit_window, **button_style)
         self.delete_habit_button.pack()
         # Tracked habit button
-        self.show_tracked_habits_button = tk.Button(self, text="Current Todo", command = self.show_tracked_habits, **button_style)
+        self.show_tracked_habits_button = tk.Button(self, text="Tracked habits", command = self.show_tracked_habits, **button_style)
         self.show_tracked_habits_button.pack()
         # Analytics Button
         self.analytics_button = tk.Button(self, text="Analytics", command=self.show_analytics_settings, **button_style)
@@ -62,7 +60,7 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
         def add_habit_to_tracker():
             name = name_entry.get()
             task = task_entry.get()
-            period = period_entry.get()  # Convert period from string to int
+            period = period_entry.get()
 
             if name and task and period:
                 if not self.HabitTracker.habit_exists(name):
@@ -71,8 +69,6 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
                     tkinter.messagebox.showinfo("Success!",f"{period} habit {name}-{task} added to tracker. Lets get going!")
                 else:
                     tk.messagebox.showerror("Error!", f"Habit {name} already exists, please be more specific!")
-            else:
-                print("Plese enter valid arguments!")
 
         add_window = tk.Toplevel(self)
         add_window.title("Add New Habit")
@@ -107,15 +103,13 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
     #########################################Delete habit#################################################
     def show_delete_habit_window(self):
         # Function to handle habit deletion
-        def delete_habit_from_tracker():
+        def delete_habit_from_tracker():  # Functionality of delete button after user confirmation
             name = selected_habit.get()
             if name and tkinter.messagebox.askokcancel("Delete habit", f"Are you sur you want to delete habit: {name}"):
                 self.HabitTracker.delete_habit(name)
                 tkinter.messagebox.showinfo("Deleted!", f"Habit '{name}' Deleted")
                 delete_window.destroy()
                 self.show_delete_habit_window()
-            else:
-                print(f"Please select a habit")
 
         delete_window = tk.Toplevel(self)
         delete_window.title("Delete Habit")
@@ -126,7 +120,7 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
             delete_label.grid(row=0, column=0)
             # Dropdown containing all tracked habits
             delete_dropdown = tk.OptionMenu(delete_window, selected_habit, *self.HabitTracker.get_habit_names())
-            delete_dropdown.grid(row=0, column =1)
+            delete_dropdown.grid(row=0, column=1)
             # Button to execute habit deletion
             delete_button = tk.Button(delete_window, text="Delete Habit", command=delete_habit_from_tracker)
             delete_button.grid(row=1, column=1)
@@ -135,7 +129,7 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
             delete_label.grid(row=0, column=0)
 
         back_to_menu_button = tk.Button(delete_window, text="Back to Menu",command=delete_window.destroy)
-        back_to_menu_button.grid(row=1, column = 0)
+        back_to_menu_button.grid(row=1, column=0)
 
     #########################################Tracked habits#################################################
     def show_tracked_habits(self):
@@ -170,6 +164,7 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
                 habit.get_deadline().strftime('%d.%m.%Y %H:%M'), habit.streak, "Completed" if habit.has_completed else ""))
             if not habit.has_completed:
                 complete_button = tk.Button(tracked_habits_window, text="Complete", borderwidth = 3, command=lambda h=habit: self.mark_as_completed(h, self.HabitTracker.database, tracked_habits_window))
+                # Geometry calculation to place complete button beside entry
                 complete_button.place(relx=0.8, y= 23+row*20, relwidth=0.2, height=20)
             row+=1
 
@@ -178,14 +173,14 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
         back_to_menu_button = tk.Button(tracked_habits_window, text="Back to Menu", command=tracked_habits_window.destroy)
         back_to_menu_button.place(relx=0.5, rely=1.0, anchor="s")
 
-    def mark_as_completed(self, habit, database, window):
+    def mark_as_completed(self, habit, database, window):  # functionality of complete button
         habit.complete(database)
         self.HabitTracker.load_dynamic_habit_data()
         window.destroy()
         self.show_tracked_habits()
 
     #########################################Analytics#################################################
-    def show_analytics_settings(self):
+    def show_analytics_settings(self):  # Load analytics parameter selection window
         analytics_settings_window = tk.Toplevel(self)
         analytics_settings_window.geometry("350x200")
         analytics_settings_window.title("Analytics")
@@ -205,21 +200,21 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
 # Select Time Period
         selected_time_period = tk.StringVar()
         selected_time_period.set("All time")  # Set the default period
-# Create Dropdown for periods
+# Create Dropdown for time periods
         time_period_dropdown_label = tk.Label(analytics_settings_window, text="Select Time:")
         time_period_dropdown_label.place(relx=0.1, rely=0.2)
         time_period_dropdown = tk.OptionMenu(analytics_settings_window, selected_time_period, *self.time_periods)
         time_period_dropdown.config(width=15)
         time_period_dropdown.place(relx=0.6, rely=0.2)
-# Select Periodicy of habit
+# Select Period of habit
         selected_period = tk.StringVar()
         selected_period.set("All")
-# Create Dropdown for periodicy
-        periodicy_dropdown_label = tk.Label(analytics_settings_window, text="Select Period:")
-        periodicy_dropdown_label.place(relx=0.1, rely=0.4)
-        periodicy_dropdown = tk.OptionMenu(analytics_settings_window, selected_period, *self.periods)
-        periodicy_dropdown.config(width=15)
-        periodicy_dropdown.place(relx=0.6, rely=0.4)
+# Create Dropdown for period
+        period_dropdown_label = tk.Label(analytics_settings_window, text="Select Period:")
+        period_dropdown_label.place(relx=0.1, rely=0.4)
+        period_dropdown = tk.OptionMenu(analytics_settings_window, selected_period, *self.periods)
+        period_dropdown.config(width=15)
+        period_dropdown.place(relx=0.6, rely=0.4)
 #Load Data Button
         load_data_button = tk.Button(analytics_settings_window, text="Load Data", command=lambda: self.show_analytics_data(analytics_settings_window, selected_habit, selected_time_period, selected_period))
         load_data_button.place(relx=0.6, rely=0.6)
@@ -258,12 +253,13 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
 
         # Create entries for selected habits
         # ((0)habit_name, (1)current_streak, (2)longest_streak, (3)completed, (4)total, (5)percentage)
+        # Check if data exists
         if len(analytics_data)>0:
             for entry in analytics_data:
-                # Turn achieval in str
+                # Turn achieval in str to display in single column
                 acieval = f"{entry[3]}/{entry[4]}"
                 # create entry
-                tree.insert("", "end", text = entry[0], values=(entry[1],entry[2], acieval, entry[5]))
+                tree.insert("", "end", text=entry[0], values=(entry[1],entry[2], acieval, entry[5]))
 
         tree.grid()
 
@@ -272,15 +268,14 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
             # Reminder of worst achieved habit
             lowest_achieval_label = tk.Label(analytics_data_window,
                             text=f"Try spending more time on {lowest_achieval[1]} "
-                            f"as you only managed to complete it {int(lowest_achieval[0])}% of times.")
+                                 f"as you only managed to complete it {int(lowest_achieval[0])}% of times.")
             lowest_achieval_label.grid()
             # Longest streak habit
 
             longest_streak_label = tk.Label(analytics_data_window, text=habit_analytics.return_max_streak_string(graph_df))
             longest_streak_label.grid()
 
-
-        back_to_menu_button = tk.Button(analytics_data_window, text="Back to Menu",command=analytics_data_window.destroy)
+        back_to_menu_button = tk.Button(analytics_data_window, text="Back to Menu", command=analytics_data_window.destroy)
         back_to_menu_button.grid()
 
 ######################################Graph########################################################
@@ -306,6 +301,6 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
             canvas.draw()
             canvas.get_tk_widget().pack()
 
-        if len(graph_df)>1:
+        if len(graph_df) > 1:
             plot_button = tk.Button(analytics_data_window, text="Plot Graph", command=analytics_graph)
             plot_button.grid()

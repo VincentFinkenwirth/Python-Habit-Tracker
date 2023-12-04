@@ -2,12 +2,13 @@ import sqlite3
 
 class DatabaseManager:  # Class that connects to a database(creates file if not exists)
     def __init__(self, database="habit_database.db"):
-        self.conn = sqlite3.connect(database, check_same_thread=False)
-        self.cursor = self.conn.cursor()
+        self.conn = sqlite3.connect(database, check_same_thread=False) # create conneection
+        self.cursor = self.conn.cursor()  # create cursor to execute statements
         self.create_Tables()
-        #self.lock = threading.Lock()
+
 
     def create_Tables(self):  # Function to create tables if none exist
+        # Static data table "habits"
         self.cursor.execute(
             "CREATE TABLE IF NOT EXISTS habits("
             "habit_id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -18,6 +19,7 @@ class DatabaseManager:  # Class that connects to a database(creates file if not 
         )
         self.conn.commit()
 
+        # Dynamic data table "habit_entries"
         self.cursor.execute(
             "CREATE TABLE IF NOT EXISTS habit_entries("
             "id_entry INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -28,7 +30,7 @@ class DatabaseManager:  # Class that connects to a database(creates file if not 
             "FOREIGN KEY (habit_id) REFERENCES habits(habit_id) ON DELETE CASCADE)")
         self.conn.commit()
 
-    def add_habit(self, habit_db_values):  # Static database entry for habit
+    def add_habit(self, habit_db_values):  # Static database entry for new habit (name, task, period, date_created)
         add_query = "INSERT INTO habits (habit_name, task, period, date_created) VALUES (?, ?, ?, ?)"
         self.cursor.execute(add_query, habit_db_values)
         self.conn.commit()
@@ -41,11 +43,6 @@ class DatabaseManager:  # Class that connects to a database(creates file if not 
     def remove_habit(self, habit_name):  # Delete habit_name from db
         delete_query = f"DELETE FROM habits WHERE habit_name = '{habit_name}'"
         self.cursor.execute(delete_query)
-        self.conn.commit()
-
-    def update_habit(self, task, period, habit_id):  # For future usage, not yet used
-        update_query = "UPDATE habits SET task = ?, period = ? WHERE habit_id = ?"
-        self.cursor.execute(update_query, (task, period, habit_id))
         self.conn.commit()
 
     def data_logger(self, habit_id, checked, date, deadline):  # Create dynamic habit entry ( Habit_id, checked, date, deadline)
