@@ -37,10 +37,17 @@ python main.py
 
 ## Features
 
-- Add and delete Habits with a task and a frequency.
+<img src="images/add_delete.png" alt="add_delete">
+
+- Add new habits you want to track.
+- Delete habits from tracker.
+
+<img src="images/tracked_analytics.png" alt="tracked">
+
 - Track, complete and gain streaks.
 - View analytics and reflect.
-- Basic tkinter GUI for easy handling.
+- Basic fluent tkinter GUI for easy handling.
+- local file sql database
 
 ## Test
 ```bash

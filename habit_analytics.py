@@ -76,6 +76,9 @@ def analytics_data(habits, habit_selection, dataframe): # takes list of habit na
         # Add entry to list containing retrieved data for selected habit
         analytics_data.append((habit, current_streak, longest_streak, completed, total, f"{int(rate)}%"))
 
+    # Sort data by total[4] in asending order
+    analytics_data.sort(key=lambda x: x[4])
+
     # Add "total" entry for table in GUI:
     # Get overall data
     longest_streak = get_max_streak(dataframe)
