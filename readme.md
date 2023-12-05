@@ -3,9 +3,8 @@
 Simple habit tracker designed to keep track and analyze important habits.
 
 
-## WIP
 ## Requirements
-[Python](https://www.python.org/) >= 3.9
+- [Python](https://www.python.org/) >= 3.9
 
 ## External Modules
 - pandas
@@ -39,17 +38,15 @@ python main.py
 
 ![Add/delete](images/add_delete.PNG)
 
-- Add new habits you want to track.
-- Delete habits from tracker.
-
 ![Tracked](images/tracked_analytics.PNG)
 
+- Simple tkinter user interface.
 - Track, complete and gain streaks.
-- View analytics and reflect.
-- Basic fluent tkinter GUI for easy handling.
-- local file sql database
+- Analyze and improve.
+- Local sqlite file storage
 
 ## Test
+Contains UnitTest based on sample data.
 ```bash
 python tracker_unittest.py
 ```

@@ -164,7 +164,8 @@ class HabitTracker:  # main habit application
                 if not habit.has_completed:  # Check if habit hasnt been completed
                     self.database.data_logger(habit.id, 0,
                                               habit.deadline.strftime('%Y-%m-%d %H:%M:%S'),
-                                              habit.deadline.strftime('%Y-%m-%d %H:%M:%S'))  # Create db entry for analytics
+                                              habit.deadline.strftime('%Y-%m-%d %H:%M:%S'))  # Create db entry
+                    # load new data
                     self.load_dynamic_habit_data()
                 else:  # Update deadline if completed and deadline passed
                     self.load_dynamic_habit_data()
