@@ -156,7 +156,8 @@ class HabitTrackerGUI(tk.Tk):  # GUI class
         tree.heading("Deadline", text="Deadline")
         tree.heading("Streak", text="Streak")
         tree.heading("Completion", text="Completion")
-        # Create entries for each habits
+
+        # Create entries for each habit
         row = 0  # Used for keeping track of where to place complete_habit button
 
         for habit in tracked_habits:
